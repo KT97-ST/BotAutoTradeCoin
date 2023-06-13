@@ -27,6 +27,18 @@ def calculate_quantity(coin_pair, usd_value, client):
     quantity = usd_value / current_price
     return quantity
 
+# Hàm tính stop loss
+def cal_stoploss(price, percent):
+    stop_loss_price = price * (1 - percent / 100)
+    stop_loss_price = round(stop_loss_price, 2)
+    return stop_loss_price
+
+# Hàm tính cal_takeprofit
+def cal_takeprofit(price, percent):
+    take_profit_price = price * (1 + percent / 100)
+    take_profit_price = round(take_profit_price, 2)
+    return take_profit_price
+
 # Kiểm tra điều kiện và đặt lệnh cho cặp coin
 def place_order_for_coin(coin_pair):
     client = Client(config.API_KEY, config.API_SECRET, testnet=True)
@@ -75,6 +87,8 @@ def place_order_for_coin(coin_pair):
 
     leverage = 10  # Đòn bẩy
     quantity = quantity * leverage
+    stop_loss = 0.05  # Mức stop loss (95% giá mua/short)
+    take_profit = 1.05  # Mức take profit (105% giá mua/short)
     # kiem tra da dat lenh hay chua
     order_status = client.futures_get_open_orders(symbol=coin_pair)
     if len(order_status) > 0:
@@ -86,7 +100,7 @@ def place_order_for_coin(coin_pair):
                 price = df['close'].iloc[i]
                 # quantity = func.calculate_quantity(price, 10, leverage)
                 stop_loss_price = func.cal_stoploss(price, 1)
-                take_profit_price = func.cal_takeprofit(price, 3)
+                take_profit_price = func.cal_takeprofit(price, 1)
                 if stop_loss_price > price:
                     tmp = stop_loss_price
                     stop_loss_price = take_profit_price
@@ -119,7 +133,7 @@ def place_order_for_coin(coin_pair):
                 price = df['close'].iloc[i]
                 # quantity = func.calculate_quantity(price, 10, leverage)
                 stop_loss_price = func.cal_stoploss(price, 1)
-                take_profit_price = func.cal_takeprofit(price, 3)
+                take_profit_price = func.cal_takeprofit(price, 1)
 
                 if stop_loss_price < price:
                     tmp = stop_loss_price
@@ -170,4 +184,4 @@ if __name__ == '__main__':
         startTrade()
         sl_run = sl_run + 1
         print("Số lần chạy: ", sl_run)
-        sleep(120)
+        sleep(60)
