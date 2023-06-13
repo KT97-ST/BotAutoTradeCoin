@@ -118,7 +118,7 @@ def place_order_for_coin(coin_pair):
                 set_take_profit = client.futures_create_order(symbol=coin_pair, side='SELL', type='TAKE_PROFIT_MARKET', quantity=quantity, stopPrice=take_profit_price)
                 print("Đã đặt stop_loss: {}".format(take_profit_price))
                 print("==========================Break===========")
-                break
+                # break
             elif df['position'].iloc[i] == -1:  # Tín hiệu bán
                 price = df['close'].iloc[i]
                 #quantity = func.calculate_quantity(price, 10, leverage)
@@ -145,7 +145,7 @@ def place_order_for_coin(coin_pair):
                 set_take_profit = client.futures_create_order(symbol=coin_pair, side='BUY', type='TAKE_PROFIT_MARKET', quantity=quantity, stopPrice=take_profit_price)
                 print("Đã đặt take_profit: {}".format(stop_loss_price))
                 print("=======================Break=============")
-                break
+                # break
 
 
 def startTrade():
